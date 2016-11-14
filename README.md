@@ -1,0 +1,2 @@
+# benchpy
+Some arbitrary benchmarks
