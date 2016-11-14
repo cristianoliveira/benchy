@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xhtml="http://www.w3.org/1999/xhtml"
+xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+{% for sitemap in sitemaps %}
+{% if sitemap['_source'].get('url') %}
+<url>
+  <loc>{{ sitemap['_source']['url'] }}</loc>
+  {% if sitemap['_source'].get('url_mobile') %}
+  <xhtml:link
+    rel="alternate" media="only screen and (max-width: 640px)"
+    href="{{ sitemap['_source']['url_mobile'] }}" />
+  {% end %}
+  <news:news>
+    <news:publication>
+      <news:name>{{ sitemap['_source']['site'] }}</news:name>
+      <news:language>pt-BR</news:language>
+    </news:publication>
+    <news:publication_date>{{ sitemap['_source']['issued'] }}</news:publication_date>
+    <news:title>{{ sitemap['_source']['title'] }}</news:title>
+  </news:news>
+</url>
+{% end %}
+{% end %}
+</urlset>
