@@ -6,7 +6,7 @@ from tornado import web
 from tornadoes import ESConnection
 
 
-es = ESConnection('localhost', '9200')
+es = ESConnection('local.elasticsearch.com', '9200')
 
 class MainHandler(tornado.web.RequestHandler):
 

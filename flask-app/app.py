@@ -2,7 +2,7 @@ from flask import Flask, render_template
 
 from elasticsearch import Elasticsearch
 
-es = Elasticsearch(['localhost:80'])
+es = Elasticsearch(['http://local.elasticsearch.com:80'])
 
 app = Flask(__name__)
 
