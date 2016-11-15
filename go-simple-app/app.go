@@ -2,13 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	elastic "gopkg.in/olivere/elastic.v3"
 	"html/template"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	elastic "gopkg.in/olivere/elastic.v3"
 )
 
 type Sitemap struct {
@@ -19,8 +18,7 @@ type Sitemap struct {
 	Title     string
 }
 
-func render(w http.ResponseWriter, templatePath string, sr *elastic.SearchResult) {
-	fmt.Printf("rendering %s \n", templatePath)
+func render(w http.ResponseWriter, templatePath string, sitemaps []Sitemap) {
 	cwd, _ := os.Getwd()
 
 	s := strings.Split(templatePath, "/")
@@ -30,13 +28,6 @@ func render(w http.ResponseWriter, templatePath string, sr *elastic.SearchResult
 		ParseFiles(filepath.Join(cwd, templatePath))
 	if err != nil {
 		panic(err)
-	}
-
-	var sitemaps []Sitemap
-	for _, hit := range sr.Hits.Hits {
-		var sitemap Sitemap
-		err = json.Unmarshal(*hit.Source, &sitemap)
-		sitemaps = append(sitemaps, sitemap)
 	}
 
 	err = t.Execute(w, sitemaps)
@@ -63,7 +54,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	render(w, "templates/index.xml", search)
+	var sitemaps []Sitemap
+	for _, hit := range search.Hits.Hits {
+		var sitemap Sitemap
+		err = json.Unmarshal(*hit.Source, &sitemap)
+		sitemaps = append(sitemaps, sitemap)
+	}
+
+	render(w, "templates/index.xml", sitemaps)
 }
 
 func main() {
